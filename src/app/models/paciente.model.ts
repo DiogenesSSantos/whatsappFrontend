@@ -40,3 +40,11 @@ export interface PacienteCreatedResponse {
   paciente: PacienteResponse;
   filaTamanho: number;
 }
+
+export interface PaginaResponse<T> {
+  conteudo: T[];
+  pagina: number;
+  tamanhoPagina: number;
+  totalItens: number;
+  totalPaginas: number;
+}

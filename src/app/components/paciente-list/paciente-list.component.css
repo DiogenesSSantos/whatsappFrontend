@@ -336,3 +336,118 @@ tr:hover {
   outline: none;
   border-color: #25D366;
 }
+
+.filtros {
+  padding: 16px 24px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.filtro-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filtro-group {
+  flex: 1;
+  min-width: 150px;
+}
+
+.filtro-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filtro-group input,
+.filtro-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.filtro-group input:focus,
+.filtro-group select:focus {
+  outline: none;
+  border-color: #25D366;
+}
+
+.filtro-actions {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 1px;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.btn-outline:hover {
+  border-color: #25D366;
+  color: #25D366;
+}
+
+.paginacao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid #eee;
+}
+
+.paginacao-info {
+  font-size: 13px;
+  color: #888;
+}
+
+.paginacao-botoes {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-page {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #555;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-page:hover:not(:disabled):not(.active) {
+  border-color: #25D366;
+  color: #25D366;
+}
+
+.btn-page.active {
+  background: #25D366;
+  color: #fff;
+  border-color: #25D366;
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -5,6 +5,40 @@
       <button class="btn btn-primary" (click)="novoPaciente()">+ Novo Paciente</button>
     </div>
 
+    <div class="filtros">
+      <div class="filtro-row">
+        <div class="filtro-group">
+          <label>Nome</label>
+          <input type="text" [(ngModel)]="filtros.nome" placeholder="Buscar por nome..."
+                 (keyup.enter)="aplicarFiltros()">
+        </div>
+        <div class="filtro-group">
+          <label>Bairro</label>
+          <input type="text" [(ngModel)]="filtros.bairro" placeholder="Buscar por bairro..."
+                 (keyup.enter)="aplicarFiltros()">
+        </div>
+        <div class="filtro-group">
+          <label>Consulta</label>
+          <input type="text" [(ngModel)]="filtros.consultaNome" placeholder="Tipo da consulta..."
+                 (keyup.enter)="aplicarFiltros()">
+        </div>
+        <div class="filtro-group">
+          <label>Status</label>
+          <select [(ngModel)]="filtros.status">
+            <option value="">Todos</option>
+            <option value="MARCADO">Marcado</option>
+            <option value="AGUARDANDO">Aguardando</option>
+            <option value="NAO_POSSUI_WHATSAPP">Não Possui WhatsApp</option>
+            <option value="REJEITADO">Rejeitado</option>
+          </select>
+        </div>
+        <div class="filtro-actions">
+          <button class="btn btn-primary btn-sm" (click)="aplicarFiltros()">Filtrar</button>
+          <button class="btn btn-outline btn-sm" (click)="limparFiltros()">Limpar</button>
+        </div>
+      </div>
+    </div>
+
     @if (carregando) {
       <div class="loading">
         <div class="spinner"></div>
@@ -18,7 +52,7 @@
 
     @if (!carregando && pacientes.length === 0 && !erro) {
       <div class="empty-state">
-        <p>Nenhum paciente cadastrado ainda.</p>
+        <p>Nenhum paciente encontrado.</p>
         <button class="btn btn-outline" (click)="novoPaciente()">Cadastrar primeiro paciente</button>
       </div>
     }
@@ -32,10 +66,10 @@
               <th>Bairro</th>
               <th>Contato</th>
               <th>Consulta</th>
-              <th>Data Marcação</th>
+              <th>Data Marcacao</th>
               <th>Data Atendimento</th>
               <th>Status</th>
-              <th>Ações</th>
+              <th>Acoes</th>
             </tr>
           </thead>
           <tbody>
@@ -77,6 +111,33 @@
           </tbody>
         </table>
       </div>
+
+      @if (totalPaginas > 1) {
+        <div class="paginacao">
+          <span class="paginacao-info">
+            Mostrando {{ paginaAtual * tamanhoPagina + 1 }}-{{ (paginaAtual + 1) * tamanhoPagina > totalItens ? totalItens : (paginaAtual + 1) * tamanhoPagina }} de {{ totalItens }}
+          </span>
+          <div class="paginacao-botoes">
+            <button class="btn-page" [disabled]="paginaAtual === 0" (click)="irParaPagina(0)" title="Primeira">
+              &laquo;
+            </button>
+            <button class="btn-page" [disabled]="paginaAtual === 0" (click)="irParaPagina(paginaAtual - 1)" title="Anterior">
+              &lsaquo;
+            </button>
+            @for (p of paginas; track p) {
+              <button class="btn-page" [class.active]="p === paginaAtual" (click)="irParaPagina(p)">
+                {{ p + 1 }}
+              </button>
+            }
+            <button class="btn-page" [disabled]="paginaAtual === totalPaginas - 1" (click)="irParaPagina(paginaAtual + 1)" title="Proxima">
+              &rsaquo;
+            </button>
+            <button class="btn-page" [disabled]="paginaAtual === totalPaginas - 1" (click)="irParaPagina(totalPaginas - 1)" title="Ultima">
+              &raquo;
+            </button>
+          </div>
+        </div>
+      }
     }
   </div>
 </div>
@@ -85,11 +146,11 @@
   <div class="modal-overlay" (click)="fecharModalExclusao()">
     <div class="modal-card" (click)="$event.stopPropagation()">
       <div class="modal-header modal-header-danger">
-        <h3>Confirmar Exclusão</h3>
+        <h3>Confirmar Exclusao</h3>
       </div>
       <div class="modal-body">
         <p>Tem certeza que deseja excluir o paciente <strong>{{ pacienteSelecionado?.nome }}</strong>?</p>
-        <p class="modal-warning">Esta ação não pode ser desfeita.</p>
+        <p class="modal-warning">Esta acao nao pode ser desfeita.</p>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="fecharModalExclusao()">Cancelar</button>
@@ -112,7 +173,7 @@
           <select id="statusSelect" [(ngModel)]="novoStatus" class="status-select">
             <option value="MARCADO">Marcado</option>
             <option value="AGUARDANDO">Aguardando</option>
-            <option value="NAO_POSSUI_WHATSAPP">Não Possui WhatsApp</option>
+            <option value="NAO_POSSUI_WHATSAPP">Nao Possui WhatsApp</option>
             <option value="REJEITADO">Rejeitado</option>
           </select>
         </div>

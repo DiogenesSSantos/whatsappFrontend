@@ -16,6 +16,18 @@ export class PacienteListComponent implements OnInit {
   carregando = false;
   erro = '';
 
+  filtros = {
+    nome: '',
+    bairro: '',
+    consultaNome: '',
+    status: ''
+  };
+
+  paginaAtual = 0;
+  tamanhoPagina = 10;
+  totalItens = 0;
+  totalPaginas = 0;
+
   modalExclusaoAberto = false;
   modalStatusAberto = false;
   pacienteSelecionado: PacienteResponse | null = null;
@@ -33,19 +45,74 @@ export class PacienteListComponent implements OnInit {
 
   carregarPacientes(): void {
     this.carregando = true;
+    this.erro = '';
     this.cdr.detectChanges();
-    this.pacienteService.listarTodos().subscribe({
-      next: (data) => {
-        this.pacientes = data;
-        this.carregando = false;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.erro = 'Erro ao carregar. Verifique se a API está rodando.';
-        this.carregando = false;
-        this.cdr.detectChanges();
-      }
-    });
+
+    const temFiltro = this.filtros.nome || this.filtros.bairro ||
+                      this.filtros.consultaNome || this.filtros.status;
+
+    if (temFiltro) {
+      this.pacienteService.buscarComFiltros({
+        nome: this.filtros.nome || undefined,
+        bairro: this.filtros.bairro || undefined,
+        consultaNome: this.filtros.consultaNome || undefined,
+        status: this.filtros.status || undefined,
+        page: this.paginaAtual,
+        size: this.tamanhoPagina
+      }).subscribe({
+        next: (data) => {
+          this.pacientes = data.conteudo;
+          this.totalItens = data.totalItens;
+          this.totalPaginas = data.totalPaginas;
+          this.carregando = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.erro = 'Erro ao carregar. Verifique se a API está rodando.';
+          this.carregando = false;
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      this.pacienteService.listarTodos().subscribe({
+        next: (data) => {
+          this.pacientes = data;
+          this.totalItens = data.length;
+          this.totalPaginas = 1;
+          this.carregando = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.erro = 'Erro ao carregar. Verifique se a API está rodando.';
+          this.carregando = false;
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
+  aplicarFiltros(): void {
+    this.paginaAtual = 0;
+    this.carregarPacientes();
+  }
+
+  limparFiltros(): void {
+    this.filtros = { nome: '', bairro: '', consultaNome: '', status: '' };
+    this.paginaAtual = 0;
+    this.carregarPacientes();
+  }
+
+  irParaPagina(pagina: number): void {
+    this.paginaAtual = pagina;
+    this.carregarPacientes();
+  }
+
+  get paginas(): number[] {
+    const paginas: number[] = [];
+    for (let i = 0; i < this.totalPaginas; i++) {
+      paginas.push(i);
+    }
+    return paginas;
   }
 
   novoPaciente(): void {
