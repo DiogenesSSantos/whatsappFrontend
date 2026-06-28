@@ -1,6 +1,6 @@
 # WhatsApp Frontend — Painel de Gestão de Pacientes
 
-Interface web para cadastro, listagem e gestão de pacientes, integrada à [WhatsApp API](https://github.com/DiogenesSSantos/whatsappApi) — backend Java que processa notificações via WhatsApp utilizando Evolution Go API e geração de mensagens inteligentes com Ollama (LLM local).
+Interface web para cadastro, listagem, edição e gestão de pacientes, integrada à [WhatsApp API](https://github.com/DiogenesSSantos/whatsappApi) — backend Java que processa notificações via WhatsApp utilizando Evolution Go API e geração de mensagens inteligentes com Ollama (LLM local).
 
 ---
 
@@ -20,18 +20,18 @@ Interface web para cadastro, listagem e gestão de pacientes, integrada à [What
 
 ## Visão Geral
 
-Este frontend é um painel administrativo desenvolvido em **Angular 22** que permite cadastrar e listar pacientes que recebem notificações de consulta via WhatsApp. Ele se comunica com o backend Java (WhatsApp API) através de requisições HTTP REST.
+Painel administrativo desenvolvido em **Angular 22** para gerenciar pacientes que recebem notificações de consulta via WhatsApp. Comunica-se com o backend Java (WhatsApp API) através de requisições HTTP REST.
 
 **Fluxo de uso:**
 
 ```
-Usuário cadastra paciente no frontend
+Usuário cadastra/edita paciente no frontend
         ↓
-Frontend envia POST para /api/pacientes (backend Java)
+Frontend envia requisição para /api/pacientes (backend Java)
         ↓
 Backend salva no MySQL, gera mensagem via Ollama e envia WhatsApp (Evolution Go)
         ↓
-Frontend lista todos os pacientes com status da notificação
+Frontend lista pacientes com filtros, paginação e status da notificação
 ```
 
 ---
@@ -57,55 +57,87 @@ Frontend lista todos os pacientes com status da notificação
 - Indicador visual de status (Marcado, Aguardando, Rejeitado, Sem WhatsApp)
 - Badge de WhatsApp nos números de celular
 - Loading spinner durante carregamento
-- Mensagem de erro amigável quando a API não responde
+
+### Filtros e Paginação
+- Filtros por **nome**, **bairro**, **consulta** (startsWith) e **status** (exato)
+- Filtros por **data de marcação** e **data de atendimento** (desde)
+- Validação: data de marcação não pode ser maior que data de atendimento
+- Paginação completa com navegação (primeira, anterior, números, próxima, última)
+- Botão "Limpar" para resetar todos os filtros
 
 ### Cadastro de Paciente (`/pacientes/novo`)
 - Formulário completo com validação
 - Suporte a múltiplos números de celular (com flag WhatsApp)
 - Seleção de tipo de consulta e status
 - Campos de data/hora de atendimento e marcação
-- Feedback visual de sucesso/erro após cadastro
-- Redirecionamento automático para a listagem após 2 segundos
+- Redirecionamento automático para a listagem após sucesso
+
+### Edição de Paciente (`/pacientes/editar/:codigo`)
+- Formulário pré-preenchido com dados do paciente
+- Navega via router state (sem SELECT adicional ao clicar)
+- Atualização de todos os campos incluindo múltiplos números de celular
+- Validação preservada para datas futuras
+
+### Alteração de Status
+- Modal para alteração rápida de status na listagem
+- Atualização otimizada via PATCH (sem recarregar lista)
+- Status: Marcado, Aguardando, Não Possui WhatsApp, Rejeitado
+
+### Exclusão de Paciente
+- Modal de confirmação customizado
+- Exclusão via DELETE direto por UUID
+- Atualização automática da listagem
+
+### Sistema de Notificações (Toast)
+- Pop-ups no canto superior direito
+- Cores diferenciadas: erro servidor (vermelho escuro), erro cliente (laranja), sucesso (verde)
+- Auto-fechamento após 8 segundos com barra de progresso
+- Botão de fechar manual
 
 ---
 
 ## Arquitetura
 
 ```
-┌─────────────────────────────────────────────────┐
-│                  Angular App                      │
-│                                                   │
-│  ┌───────────────┐  ┌──────────────────────────┐  │
-│  │  App Component │  │    Router                 │  │
-│  │  (navbar +     │  │  / → /pacientes           │  │
-│  │   router-outlet│  │  /pacientes/novo          │  │
-│  │  )             │  └──────────────────────────┘  │
-│  └───────┬───────┘                                │
-│          │                                        │
-│  ┌───────┴────────────────────────────────────┐   │
-│  │           Components                        │   │
-│  │  ┌────────────────┐  ┌──────────────────┐  │   │
-│  │  │ PacienteList    │  │ PacienteForm     │  │   │
-│  │  │ Component       │  │ Component        │  │   │
-│  │  └───────┬────────┘  └──────┬───────────┘  │   │
-│  └──────────┼──────────────────┼──────────────┘   │
-│             │                  │                   │
-│  ┌──────────┴──────────────────┴──────────────┐   │
-│  │           Services                          │   │
-│  │  ┌──────────────────────────────────────┐  │   │
-│  │  │        PacienteService                │  │   │
-│  │  │  GET  /api/pacientes                  │  │   │
-│  │  │  POST /api/pacientes                  │  │   │
-│  │  └──────────────────────────────────────┘  │   │
-│  └───────────────────┬───────────────────────┘   │
-└──────────────────────┼───────────────────────────┘
-                       │ HTTP (proxy /api → :8082)
-                       ↓
-              ┌─────────────────┐
-              │  WhatsApp API    │
-              │  (Spring Boot)   │
-              │  localhost:8082  │
-              └─────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    Angular App                            │
+│                                                          │
+│  ┌───────────────┐  ┌───────────────────────────────┐   │
+│  │  App Component │  │    Router                      │   │
+│  │  (navbar +     │  │  / → /pacientes                │   │
+│  │   router-outlet│  │  /pacientes/novo               │   │
+│  │  )             │  │  /pacientes/editar/:codigo     │   │
+│  └───────┬───────┘  └───────────────────────────────┘   │
+│          │                                               │
+│  ┌───────┴──────────────────────────────────────────┐   │
+│  │              Components                           │   │
+│  │  ┌──────────────┐ ┌──────────────┐ ┌───────────┐│   │
+│  │  │ PacienteList  │ │ PacienteForm │ │PacienteEdit││   │
+│  │  │ (filtros,     │ │ (cadastro)   │ │(edicao)   ││   │
+│  │  │  paginacao,   │ └──────────────┘ └───────────┘│   │
+│  │  │  modais)      │ ┌──────────────┐              │   │
+│  │  └──────────────┘ │ Toast        │              │   │
+│  │                    │ (notificacoes)│              │   │
+│  │                    └──────────────┘              │   │
+│  └──────────────────────┬───────────────────────────┘   │
+│  ┌──────────────────────┴───────────────────────────┐   │
+│  │              PacienteService                       │   │
+│  │  GET    /api/pacientes             (listar)       │   │
+│  │  GET    /api/pacientes/buscar      (filtros)      │   │
+│  │  GET    /api/pacientes/:codigo     (buscar)       │   │
+│  │  POST   /api/pacientes             (cadastrar)    │   │
+│  │  PUT    /api/pacientes/:codigo     (atualizar)    │   │
+│  │  PATCH  /api/pacientes/:codigo/status (status)    │   │
+│  │  DELETE /api/pacientes/:codigo     (excluir)      │   │
+│  └──────────────────────┬───────────────────────────┘   │
+└─────────────────────────┼───────────────────────────────┘
+                          │ HTTP (proxy /api → :8082)
+                          ↓
+                 ┌─────────────────┐
+                 │  WhatsApp API    │
+                 │  (Spring Boot)   │
+                 │  localhost:8082  │
+                 └─────────────────┘
 ```
 
 ---
@@ -124,21 +156,29 @@ src/
 │   ├── app.routes.ts                # Definição de rotas
 │   │
 │   ├── components/
-│   │   ├── paciente-list/
-│   │   │   ├── paciente-list.component.ts      # Lógica de listagem
-│   │   │   ├── paciente-list.component.html    # Template da tabela
-│   │   │   └── paciente-list.component.css     # Estilos da listagem
+│   │   ├── paciente-list/           # Listagem com filtros e paginação
+│   │   │   ├── paciente-list.component.ts
+│   │   │   ├── paciente-list.component.html
+│   │   │   └── paciente-list.component.css
 │   │   │
-│   │   └── paciente-form/
-│   │       ├── paciente-form.component.ts       # Lógica de cadastro
-│   │       ├── paciente-form.component.html     # Template do formulário
-│   │       └── paciente-form.component.css      # Estilos do formulário
+│   │   ├── paciente-form/           # Cadastro de novo paciente
+│   │   │   ├── paciente-form.component.ts
+│   │   │   ├── paciente-form.component.html
+│   │   │   └── paciente-form.component.css
+│   │   │
+│   │   ├── paciente-edit/           # Edição de paciente existente
+│   │   │   ├── paciente-edit.component.ts
+│   │   │   ├── paciente-edit.component.html
+│   │   │   └── paciente-edit.component.css
+│   │   │
+│   │   └── toast/                   # Sistema de notificações
+│   │       └── toast.component.ts
 │   │
 │   ├── services/
-│   │   └── paciente.service.ts      # Serviço HTTP (GET/POST /api/pacientes)
+│   │   └── paciente.service.ts      # Serviço HTTP (CRUD completo)
 │   │
 │   └── models/
-│       └── paciente.model.ts        # Interfaces TypeScript (request/response)
+│       └── paciente.model.ts        # Interfaces TypeScript
 │
 ├── proxy.conf.json                  # Proxy reverso para API backend
 ├── angular.json                     # Configuração do Angular CLI
@@ -161,38 +201,16 @@ Este frontend se comunica com o [WhatsApp API](https://github.com/DiogenesSSanto
 | Método | Endpoint | Descrição | Usado em |
 |---|---|---|---|
 | `GET` | `/api/pacientes` | Lista todos os pacientes | Listagem |
-| `POST` | `/api/pacientes` | Cadastra um paciente e enfileira notificação | Formulário |
+| `GET` | `/api/pacientes/buscar` | Busca com filtros e paginação | Listagem |
+| `GET` | `/api/pacientes/:codigo` | Busca por UUID | Edição (fallback) |
+| `POST` | `/api/pacientes` | Cadastra paciente + notificação | Cadastro |
+| `PUT` | `/api/pacientes/:codigo` | Atualiza dados do paciente | Edição |
+| `PATCH` | `/api/pacientes/:codigo/status` | Atualiza apenas o status | Modal status |
+| `DELETE` | `/api/pacientes/:codigo` | Exclui paciente | Modal exclusão |
 
 ### Proxy de desenvolvimento
 
-O `proxy.conf.json` redireciona chamadas `/api/*` para o backend rodando em `localhost:8082`:
-
-```json
-{
-  "/api": {
-    "target": "http://localhost:8082",
-    "secure": false,
-    "changeOrigin": true
-  }
-}
-```
-
-### Modelo de dados compartilhado
-
-```
-PacienteRequest / PacienteResponse
-├── nome: string
-├── contato
-│   ├── bairro: string
-│   └── numerosCelular[]
-│       ├── celular: string (formato: 55DDD9XXXXXXX)
-│       └── isWhatsapp: boolean
-└── consulta
-    ├── nome: string
-    ├── dataAtendimento: string (ISO 8601)
-    ├── dataMarcacao: string (ISO 8601)
-    └── status: MARCADO | AGUARDANDO | NAO_POSSUI_WHATSAPP | REJEITADO
-```
+O `proxy.conf.json` redireciona chamadas `/api/*` para o backend em `localhost:8082`.
 
 ---
 
@@ -206,35 +224,22 @@ PacienteRequest / PacienteResponse
 
 ## Instalação e Execução
 
-### Instalar dependências
-
 ```bash
+# Instalar dependências
 npm install
-```
 
-### Iniciar o servidor de desenvolvimento
-
-```bash
+# Iniciar servidor de desenvolvimento
 ng serve
+
+# Build para produção
+ng build --configuration production
 ```
 
 A aplicação estará disponível em **http://localhost:4200**
 
-> **Importante:** O backend Java deve estar rodando na porta 8082 para que as requisições API funcionem corretamente via proxy.
-
-### Build para produção
-
-```bash
-ng build --configuration production
-```
-
-Os arquivos compilados serão gerados em `dist/whatsappFrontend/browser/`.
-
 ---
 
 ## Configuração
-
-### Porta do backend
 
 Se o backend rodar em porta diferente de 8082, altere o `proxy.conf.json`:
 

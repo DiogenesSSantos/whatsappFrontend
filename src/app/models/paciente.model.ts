@@ -8,18 +8,13 @@ export interface Contato {
   bairro: string;
 }
 
-export interface StatusConsulta {
-  MARCADO: 'MARCADO';
-  AGUARDANDO: 'AGUARDANDO';
-  NAO_POSSUI_WHATSAPP: 'NAO_POSSUI_WHATSAPP';
-  REJEITADO: 'REJEITADO';
-}
+export type StatusConsulta = 'MARCADO' | 'AGUARDANDO' | 'NAO_POSSUI_WHATSAPP' | 'REJEITADO';
 
 export interface Consulta {
   nome: string;
   dataAtendimento: string;
   dataMarcacao: string;
-  status: 'MARCADO' | 'AGUARDANDO' | 'NAO_POSSUI_WHATSAPP' | 'REJEITADO';
+  status: StatusConsulta;
 }
 
 export interface PacienteRequest {
