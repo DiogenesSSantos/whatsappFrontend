@@ -30,6 +30,8 @@ export class PacienteListComponent implements OnInit {
   totalItens = 0;
   totalPaginas = 0;
 
+  erroData = '';
+
   modalExclusaoAberto = false;
   modalStatusAberto = false;
   pacienteSelecionado: PacienteResponse | null = null;
@@ -76,6 +78,15 @@ export class PacienteListComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
+    this.erroData = '';
+
+    if (this.filtros.dataMarcacaoInicio && this.filtros.dataAtendimentoInicio) {
+      if (this.filtros.dataMarcacaoInicio > this.filtros.dataAtendimentoInicio) {
+        this.erroData = 'Data de marcacao nao pode ser maior que data de atendimento.';
+        return;
+      }
+    }
+
     this.paginaAtual = 0;
     this.carregarPacientes();
   }

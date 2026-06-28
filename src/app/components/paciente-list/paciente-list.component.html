@@ -143,8 +143,12 @@
             <button class="btn-page" [disabled]="paginaAtual === totalPaginas - 1" (click)="irParaPagina(totalPaginas - 1)" title="Ultima">
               &raquo;
             </button>
-          </div>
-        </div>
+      </div>
+
+      @if (erroData) {
+        <div class="alert alert-error" style="margin: 8px 0 0 0;">{{ erroData }}</div>
+      }
+    </div>
       }
     }
   </div>
