@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PacienteService } from '../../services/paciente.service';
-import { PacienteRequest } from '../../models/paciente.model';
+import { PacienteRequest, PacienteResponse } from '../../models/paciente.model';
 
 @Component({
   selector: 'app-paciente-edit',
@@ -41,7 +41,13 @@ export class PacienteEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.codigo = this.route.snapshot.paramMap.get('codigo') || '';
-    if (this.codigo) {
+    const state = history.state as { paciente?: PacienteResponse };
+
+    if (state?.paciente) {
+      this.preencherDados(state.paciente);
+      this.carregandoDados = false;
+      this.cdr.detectChanges();
+    } else if (this.codigo) {
       this.carregarPaciente();
     } else {
       this.erro = 'Código do paciente não encontrado.';
@@ -50,25 +56,29 @@ export class PacienteEditComponent implements OnInit {
     }
   }
 
+  preencherDados(data: PacienteResponse): void {
+    this.paciente = {
+      nome: data.nome,
+      contato: {
+        numerosCelular: data.contato.numerosCelular.map(n => ({
+          celular: n.celular,
+          isWhatsapp: n.isWhatsapp
+        })),
+        bairro: data.contato.bairro
+      },
+      consulta: {
+        nome: data.consulta.nome,
+        dataAtendimento: this.formatarParaInput(data.consulta.dataAtendimento),
+        dataMarcacao: this.formatarParaInput(data.consulta.dataMarcacao),
+        status: data.consulta.status
+      }
+    };
+  }
+
   carregarPaciente(): void {
     this.pacienteService.buscarPorCodigo(this.codigo).subscribe({
       next: (data) => {
-        this.paciente = {
-          nome: data.nome,
-          contato: {
-            numerosCelular: data.contato.numerosCelular.map(n => ({
-              celular: n.celular,
-              isWhatsapp: n.isWhatsapp
-            })),
-            bairro: data.contato.bairro
-          },
-          consulta: {
-            nome: data.consulta.nome,
-            dataAtendimento: this.formatarParaInput(data.consulta.dataAtendimento),
-            dataMarcacao: this.formatarParaInput(data.consulta.dataMarcacao),
-            status: data.consulta.status
-          }
-        };
+        this.preencherDados(data);
         this.carregandoDados = false;
         this.cdr.detectChanges();
       },

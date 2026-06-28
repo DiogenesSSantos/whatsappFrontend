@@ -52,8 +52,8 @@ export class PacienteListComponent implements OnInit {
     this.router.navigate(['/pacientes/novo']);
   }
 
-  editar(codigo: string): void {
-    this.router.navigate(['/pacientes/editar', codigo]);
+  editar(paciente: PacienteResponse): void {
+    this.router.navigate(['/pacientes/editar', paciente.codigo], { state: { paciente } });
   }
 
   confirmarExclusao(paciente: PacienteResponse): void {
@@ -102,8 +102,8 @@ export class PacienteListComponent implements OnInit {
     if (!this.pacienteSelecionado || !this.novoStatus) return;
     this.pacienteService.atualizarStatus(this.pacienteSelecionado.codigo, this.novoStatus).subscribe({
       next: () => {
+        this.pacienteSelecionado!.consulta.status = this.novoStatus as any;
         this.fecharModalStatus();
-        this.carregarPacientes();
       },
       error: () => {
         this.erro = 'Erro ao atualizar status.';
