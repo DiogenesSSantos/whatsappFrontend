@@ -29,6 +29,7 @@ export interface PacienteRequest {
 }
 
 export interface PacienteResponse {
+  codigo: string;
   nome: string;
   contato: Contato;
   consulta: Consulta;

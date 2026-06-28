@@ -34,10 +34,11 @@
               <th>Consulta</th>
               <th>Data Atendimento</th>
               <th>Status</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            @for (p of pacientes; track p.nome) {
+            @for (p of pacientes; track p.codigo) {
               <tr>
                 <td class="nome">{{ p.nome }}</td>
                 <td>{{ p.contato.bairro }}</td>
@@ -58,6 +59,17 @@
                     {{ formatStatus(p.consulta.status) }}
                   </span>
                 </td>
+                <td class="acoes">
+                  <button class="btn-action btn-edit" (click)="editar(p.codigo)" title="Editar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                  </button>
+                  <button class="btn-action btn-status" (click)="abrirModalStatus(p)" title="Alterar Status">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                  </button>
+                  <button class="btn-action btn-delete" (click)="confirmarExclusao(p)" title="Excluir">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                  </button>
+                </td>
               </tr>
             }
           </tbody>
@@ -66,3 +78,47 @@
     }
   </div>
 </div>
+
+@if (modalExclusaoAberto) {
+  <div class="modal-overlay" (click)="fecharModalExclusao()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header modal-header-danger">
+        <h3>Confirmar Exclusão</h3>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja excluir o paciente <strong>{{ pacienteSelecionado?.nome }}</strong>?</p>
+        <p class="modal-warning">Esta ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="fecharModalExclusao()">Cancelar</button>
+        <button class="btn btn-danger" (click)="excluir()">Excluir</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (modalStatusAberto) {
+  <div class="modal-overlay" (click)="fecharModalStatus()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Alterar Status</h3>
+      </div>
+      <div class="modal-body">
+        <p>Paciente: <strong>{{ pacienteSelecionado?.nome }}</strong></p>
+        <div class="form-group">
+          <label for="statusSelect">Novo Status</label>
+          <select id="statusSelect" [(ngModel)]="novoStatus" class="status-select">
+            <option value="MARCADO">Marcado</option>
+            <option value="AGUARDANDO">Aguardando</option>
+            <option value="NAO_POSSUI_WHATSAPP">Não Possui WhatsApp</option>
+            <option value="REJEITADO">Rejeitado</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="fecharModalStatus()">Cancelar</button>
+        <button class="btn btn-primary" (click)="atualizarStatus()">Salvar</button>
+      </div>
+    </div>
+  </div>
+}

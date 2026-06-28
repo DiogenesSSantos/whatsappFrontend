@@ -18,4 +18,20 @@ export class PacienteService {
   listarTodos(): Observable<PacienteResponse[]> {
     return this.http.get<PacienteResponse[]>(this.apiUrl);
   }
+
+  buscarPorCodigo(codigo: string): Observable<PacienteResponse> {
+    return this.http.get<PacienteResponse>(`${this.apiUrl}/${codigo}`);
+  }
+
+  editar(codigo: string, paciente: PacienteRequest): Observable<PacienteResponse> {
+    return this.http.put<PacienteResponse>(`${this.apiUrl}/${codigo}`, paciente);
+  }
+
+  excluir(codigo: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${codigo}`);
+  }
+
+  atualizarStatus(codigo: string, status: string): Observable<PacienteResponse> {
+    return this.http.patch<PacienteResponse>(`${this.apiUrl}/${codigo}/status`, { status });
+  }
 }
