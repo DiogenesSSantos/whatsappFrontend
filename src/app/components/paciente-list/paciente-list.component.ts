@@ -20,7 +20,9 @@ export class PacienteListComponent implements OnInit {
     nome: '',
     bairro: '',
     consultaNome: '',
-    status: ''
+    status: '',
+    dataMarcacaoInicio: '',
+    dataAtendimentoInicio: ''
   };
 
   paginaAtual = 0;
@@ -53,6 +55,8 @@ export class PacienteListComponent implements OnInit {
       bairro: this.filtros.bairro || undefined,
       consultaNome: this.filtros.consultaNome || undefined,
       status: this.filtros.status || undefined,
+      dataMarcacaoInicio: this.filtros.dataMarcacaoInicio || undefined,
+      dataAtendimentoInicio: this.filtros.dataAtendimentoInicio || undefined,
       page: this.paginaAtual,
       size: this.tamanhoPagina
     }).subscribe({
@@ -77,7 +81,7 @@ export class PacienteListComponent implements OnInit {
   }
 
   limparFiltros(): void {
-    this.filtros = { nome: '', bairro: '', consultaNome: '', status: '' };
+    this.filtros = { nome: '', bairro: '', consultaNome: '', status: '', dataMarcacaoInicio: '', dataAtendimentoInicio: '' };
     this.paginaAtual = 0;
     this.carregarPacientes();
   }

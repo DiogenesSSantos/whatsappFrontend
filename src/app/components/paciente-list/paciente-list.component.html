@@ -28,9 +28,17 @@
             <option value="">Todos</option>
             <option value="MARCADO">Marcado</option>
             <option value="AGUARDANDO">Aguardando</option>
-            <option value="NAO_POSSUI_WHATSAPP">Não Possui WhatsApp</option>
+            <option value="NAO_POSSUI_WHATSAPP">Nao Possui WhatsApp</option>
             <option value="REJEITADO">Rejeitado</option>
           </select>
+        </div>
+        <div class="filtro-group">
+          <label>Data Marcacao (desde)</label>
+          <input type="date" [(ngModel)]="filtros.dataMarcacaoInicio">
+        </div>
+        <div class="filtro-group">
+          <label>Data Atendimento (desde)</label>
+          <input type="date" [(ngModel)]="filtros.dataAtendimentoInicio">
         </div>
         <div class="filtro-actions">
           <button class="btn btn-primary btn-sm" (click)="aplicarFiltros()">Filtrar</button>
