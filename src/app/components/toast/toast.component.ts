@@ -33,6 +33,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
     .toast-success { background: #2e7d32; }
     .toast-warning { background: #f57c00; }
     .toast-info { background: #1976d2; }
+    .toast-server { background: #b71c1c; }
 
     .toast-msg { display: block; }
 
@@ -57,7 +58,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
       left: 0;
       height: 3px;
       background: rgba(255,255,255,0.5);
-      animation: shrink 5s linear forwards;
+      animation: shrink 8s linear forwards;
     }
 
     @keyframes slideIn {
@@ -73,8 +74,8 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 })
 export class ToastComponent implements OnInit {
   @Input() mensagem = '';
-  @Input() tipo: 'error' | 'success' | 'warning' | 'info' = 'error';
-  @Input() duracao = 5000;
+  @Input() tipo: 'error' | 'success' | 'warning' | 'info' | 'server' = 'error';
+  @Input() duracao = 8000;
   @Output() fecharEvento = new EventEmitter<void>();
 
   ngOnInit(): void {

@@ -8,7 +8,7 @@ import { ToastComponent } from '../toast/toast.component';
 interface Toast {
   id: number;
   mensagem: string;
-  tipo: 'error' | 'success' | 'warning' | 'info';
+  tipo: 'error' | 'success' | 'warning' | 'info' | 'server';
 }
 
 @Component({
@@ -54,7 +54,7 @@ export class PacienteListComponent implements OnInit {
     this.carregarPacientes();
   }
 
-  adicionarToast(mensagem: string, tipo: 'error' | 'success' | 'warning' | 'info' = 'error'): void {
+  adicionarToast(mensagem: string, tipo: 'error' | 'success' | 'warning' | 'info' | 'server' = 'error'): void {
     const id = ++this.toastId;
     this.toasts.push({ id, mensagem, tipo });
     this.cdr.detectChanges();
@@ -88,7 +88,7 @@ export class PacienteListComponent implements OnInit {
       },
       error: () => {
         this.carregando = false;
-        this.adicionarToast('Erro ao carregar. Verifique se a API esta rodando.');
+        this.adicionarToast('Erro ao carregar. Verifique se a API esta rodando.', 'server');
       }
     });
   }
@@ -155,7 +155,7 @@ export class PacienteListComponent implements OnInit {
       },
       error: () => {
         this.fecharModalExclusao();
-        this.adicionarToast('Erro ao excluir paciente.');
+        this.adicionarToast('Erro ao excluir paciente.', 'server');
       }
     });
   }
@@ -184,7 +184,7 @@ export class PacienteListComponent implements OnInit {
       },
       error: () => {
         this.fecharModalStatus();
-        this.adicionarToast('Erro ao atualizar status.');
+        this.adicionarToast('Erro ao atualizar status.', 'server');
       }
     });
   }
