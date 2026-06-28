@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Pacientes</h2>
+      <button class="btn btn-primary" (click)="novoPaciente()">+ Novo Paciente</button>
+    </div>
+
+    @if (carregando) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Carregando...</span>
+      </div>
+    }
+
+    @if (erro) {
+      <div class="alert alert-error">{{ erro }}</div>
+    }
+
+    @if (!carregando && pacientes.length === 0 && !erro) {
+      <div class="empty-state">
+        <p>Nenhum paciente cadastrado ainda.</p>
+        <button class="btn btn-outline" (click)="novoPaciente()">Cadastrar primeiro paciente</button>
+      </div>
+    }
+
+    @if (!carregando && pacientes.length > 0) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Bairro</th>
+              <th>Contato</th>
+              <th>Consulta</th>
+              <th>Data Atendimento</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of pacientes; track p.nome) {
+              <tr>
+                <td class="nome">{{ p.nome }}</td>
+                <td>{{ p.contato.bairro }}</td>
+                <td>
+                  @for (n of p.contato.numerosCelular; track n.celular) {
+                    <div class="numero-info">
+                      {{ n.celular }}
+                      @if (n.isWhatsapp) {
+                        <span class="whatsapp-badge">WA</span>
+                      }
+                    </div>
+                  }
+                </td>
+                <td>{{ p.consulta.nome }}</td>
+                <td>{{ formatarData(p.consulta.dataAtendimento) }}</td>
+                <td>
+                  <span class="status-badge" [class]="getStatusClass(p.consulta.status)">
+                    {{ formatStatus(p.consulta.status) }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
