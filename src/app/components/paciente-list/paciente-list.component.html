@@ -32,6 +32,7 @@
               <th>Bairro</th>
               <th>Contato</th>
               <th>Consulta</th>
+              <th>Data Marcação</th>
               <th>Data Atendimento</th>
               <th>Status</th>
               <th>Ações</th>
@@ -53,6 +54,7 @@
                   }
                 </td>
                 <td>{{ p.consulta.nome }}</td>
+                <td>{{ formatarData(p.consulta.dataMarcacao) }}</td>
                 <td>{{ formatarData(p.consulta.dataAtendimento) }}</td>
                 <td>
                   <span class="status-badge" [class]="getStatusClass(p.consulta.status)">
