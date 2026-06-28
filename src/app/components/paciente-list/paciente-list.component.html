@@ -1,3 +1,7 @@
+@for (toast of toasts; track toast.id) {
+  <app-toast [mensagem]="toast.mensagem" [tipo]="toast.tipo" (fecharEvento)="fecharToast(toast.id)"></app-toast>
+}
+
 <div class="container">
   <div class="card">
     <div class="card-header">
@@ -9,18 +13,15 @@
       <div class="filtro-row">
         <div class="filtro-group">
           <label>Nome</label>
-          <input type="text" [(ngModel)]="filtros.nome" placeholder="Buscar por nome..."
-                 (keyup.enter)="aplicarFiltros()">
+          <input type="text" [(ngModel)]="filtros.nome" placeholder="Buscar por nome..." (keyup.enter)="aplicarFiltros()">
         </div>
         <div class="filtro-group">
           <label>Bairro</label>
-          <input type="text" [(ngModel)]="filtros.bairro" placeholder="Buscar por bairro..."
-                 (keyup.enter)="aplicarFiltros()">
+          <input type="text" [(ngModel)]="filtros.bairro" placeholder="Buscar por bairro..." (keyup.enter)="aplicarFiltros()">
         </div>
         <div class="filtro-group">
           <label>Consulta</label>
-          <input type="text" [(ngModel)]="filtros.consultaNome" placeholder="Tipo da consulta..."
-                 (keyup.enter)="aplicarFiltros()">
+          <input type="text" [(ngModel)]="filtros.consultaNome" placeholder="Tipo da consulta..." (keyup.enter)="aplicarFiltros()">
         </div>
         <div class="filtro-group">
           <label>Status</label>
@@ -54,11 +55,7 @@
       </div>
     }
 
-    @if (erro) {
-      <div class="alert alert-error">{{ erro }}</div>
-    }
-
-    @if (!carregando && pacientes.length === 0 && !erro) {
+    @if (!carregando && pacientes.length === 0) {
       <div class="empty-state">
         <p>Nenhum paciente encontrado.</p>
         <button class="btn btn-outline" (click)="novoPaciente()">Cadastrar primeiro paciente</button>
@@ -126,29 +123,15 @@
             Mostrando {{ paginaAtual * tamanhoPagina + 1 }}-{{ (paginaAtual + 1) * tamanhoPagina > totalItens ? totalItens : (paginaAtual + 1) * tamanhoPagina }} de {{ totalItens }}
           </span>
           <div class="paginacao-botoes">
-            <button class="btn-page" [disabled]="paginaAtual === 0" (click)="irParaPagina(0)" title="Primeira">
-              &laquo;
-            </button>
-            <button class="btn-page" [disabled]="paginaAtual === 0" (click)="irParaPagina(paginaAtual - 1)" title="Anterior">
-              &lsaquo;
-            </button>
+            <button class="btn-page" [disabled]="paginaAtual === 0" (click)="irParaPagina(0)" title="Primeira">&laquo;</button>
+            <button class="btn-page" [disabled]="paginaAtual === 0" (click)="irParaPagina(paginaAtual - 1)" title="Anterior">&lsaquo;</button>
             @for (p of paginas; track p) {
-              <button class="btn-page" [class.active]="p === paginaAtual" (click)="irParaPagina(p)">
-                {{ p + 1 }}
-              </button>
+              <button class="btn-page" [class.active]="p === paginaAtual" (click)="irParaPagina(p)">{{ p + 1 }}</button>
             }
-            <button class="btn-page" [disabled]="paginaAtual === totalPaginas - 1" (click)="irParaPagina(paginaAtual + 1)" title="Proxima">
-              &rsaquo;
-            </button>
-            <button class="btn-page" [disabled]="paginaAtual === totalPaginas - 1" (click)="irParaPagina(totalPaginas - 1)" title="Ultima">
-              &raquo;
-            </button>
-      </div>
-
-      @if (erroData) {
-        <div class="alert alert-error" style="margin: 8px 0 0 0;">{{ erroData }}</div>
-      }
-    </div>
+            <button class="btn-page" [disabled]="paginaAtual === totalPaginas - 1" (click)="irParaPagina(paginaAtual + 1)" title="Proxima">&rsaquo;</button>
+            <button class="btn-page" [disabled]="paginaAtual === totalPaginas - 1" (click)="irParaPagina(totalPaginas - 1)" title="Ultima">&raquo;</button>
+          </div>
+        </div>
       }
     }
   </div>

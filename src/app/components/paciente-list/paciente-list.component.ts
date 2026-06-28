@@ -3,18 +3,27 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PacienteService } from '../../services/paciente.service';
 import { PacienteResponse } from '../../models/paciente.model';
+import { ToastComponent } from '../toast/toast.component';
+
+interface Toast {
+  id: number;
+  mensagem: string;
+  tipo: 'error' | 'success' | 'warning' | 'info';
+}
 
 @Component({
   selector: 'app-paciente-list',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, ToastComponent],
   templateUrl: './paciente-list.component.html',
   styleUrls: ['./paciente-list.component.css']
 })
 export class PacienteListComponent implements OnInit {
   pacientes: PacienteResponse[] = [];
   carregando = false;
-  erro = '';
+
+  toasts: Toast[] = [];
+  private toastId = 0;
 
   filtros = {
     nome: '',
@@ -29,8 +38,6 @@ export class PacienteListComponent implements OnInit {
   tamanhoPagina = 10;
   totalItens = 0;
   totalPaginas = 0;
-
-  erroData = '';
 
   modalExclusaoAberto = false;
   modalStatusAberto = false;
@@ -47,9 +54,19 @@ export class PacienteListComponent implements OnInit {
     this.carregarPacientes();
   }
 
+  adicionarToast(mensagem: string, tipo: 'error' | 'success' | 'warning' | 'info' = 'error'): void {
+    const id = ++this.toastId;
+    this.toasts.push({ id, mensagem, tipo });
+    this.cdr.detectChanges();
+  }
+
+  fecharToast(id: number): void {
+    this.toasts = this.toasts.filter(t => t.id !== id);
+    this.cdr.detectChanges();
+  }
+
   carregarPacientes(): void {
     this.carregando = true;
-    this.erro = '';
     this.cdr.detectChanges();
 
     this.pacienteService.buscarComFiltros({
@@ -70,19 +87,16 @@ export class PacienteListComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        this.erro = 'Erro ao carregar. Verifique se a API esta rodando.';
         this.carregando = false;
-        this.cdr.detectChanges();
+        this.adicionarToast('Erro ao carregar. Verifique se a API esta rodando.');
       }
     });
   }
 
   aplicarFiltros(): void {
-    this.erroData = '';
-
     if (this.filtros.dataMarcacaoInicio && this.filtros.dataAtendimentoInicio) {
       if (this.filtros.dataMarcacaoInicio > this.filtros.dataAtendimentoInicio) {
-        this.erroData = 'Data de marcacao nao pode ser maior que data de atendimento.';
+        this.adicionarToast('Data de marcacao nao pode ser maior que data de atendimento.', 'warning');
         return;
       }
     }
@@ -136,12 +150,12 @@ export class PacienteListComponent implements OnInit {
     this.pacienteService.excluir(codigo).subscribe({
       next: () => {
         this.fecharModalExclusao();
+        this.adicionarToast('Paciente excluido com sucesso!', 'success');
         this.carregarPacientes();
       },
       error: () => {
-        this.erro = 'Erro ao excluir paciente.';
         this.fecharModalExclusao();
-        this.cdr.detectChanges();
+        this.adicionarToast('Erro ao excluir paciente.');
       }
     });
   }
@@ -166,11 +180,11 @@ export class PacienteListComponent implements OnInit {
       next: () => {
         this.pacienteSelecionado!.consulta.status = this.novoStatus as any;
         this.fecharModalStatus();
+        this.adicionarToast('Status atualizado com sucesso!', 'success');
       },
       error: () => {
-        this.erro = 'Erro ao atualizar status.';
         this.fecharModalStatus();
-        this.cdr.detectChanges();
+        this.adicionarToast('Erro ao atualizar status.');
       }
     });
   }
