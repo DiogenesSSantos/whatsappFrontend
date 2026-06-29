@@ -2,7 +2,7 @@ name: Lint Frontend
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   lint-and-test:

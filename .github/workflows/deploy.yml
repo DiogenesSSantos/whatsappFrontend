@@ -2,7 +2,7 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/whatsapp-frontend
