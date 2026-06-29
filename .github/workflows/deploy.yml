@@ -64,9 +64,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ${{ secrets.VPS_DEPLOY_PATH }}
-            docker compose pull
-            docker compose up -d
+            docker pull ${{ env.IMAGE_NAME }}:latest
+            docker stop frontend || true
+            docker rm frontend || true
+            docker run -d --name frontend --network whatsapp-api_app-network -p 80:80 --restart unless-stopped ${{ env.IMAGE_NAME }}:latest
 
       - name: Discord notification
         if: always()
@@ -99,10 +100,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ${{ secrets.VPS_DEPLOY_PATH }}
             docker pull ${{ env.IMAGE_NAME }}:v${{ github.run_number }}
-            docker tag ${{ env.IMAGE_NAME }}:v${{ github.run_number }} ${{ env.IMAGE_NAME }}:prod
-            docker compose -f docker-compose.prod.yml up -d
+            docker stop frontend || true
+            docker rm frontend || true
+            docker run -d --name frontend --network whatsapp-api_app-network -p 80:80 --restart unless-stopped ${{ env.IMAGE_NAME }}:v${{ github.run_number }}
 
       - name: Discord notification
         if: always()
