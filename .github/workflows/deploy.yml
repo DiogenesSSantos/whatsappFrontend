@@ -69,16 +69,6 @@ jobs:
             docker rm frontend || true
             docker run -d --name frontend --network whatsapp-api_app-network -p 80:80 --restart unless-stopped ${{ env.IMAGE_NAME }}:latest
 
-      - name: Discord notification
-        if: always()
-        env:
-          STATUS: ${{ job.status }}
-        run: |
-          if [ "$STATUS" = "success" ]; then COLOR=3066993; else COLOR=15158332; fi
-          curl -s -H "Content-Type: application/json" \
-            -d "{\"embeds\":[{\"title\":\"Frontend Deploy (Dev)\",\"description\":\"Status: **'${STATUS}'**\nRun: ${{ github.run_number }}\nCommit: ${{ github.sha }}\",\"color\":${COLOR}}]}" \
-            ${{ secrets.DISCORD_WEBHOOK_URL }}
-
   deploy-prod:
     needs: deploy-dev
     runs-on: ubuntu-latest
@@ -104,6 +94,7 @@ jobs:
             docker stop frontend || true
             docker rm frontend || true
             docker run -d --name frontend --network whatsapp-api_app-network -p 80:80 --restart unless-stopped ${{ env.IMAGE_NAME }}:v${{ github.run_number }}
+
 
       - name: Discord notification
         if: always()
