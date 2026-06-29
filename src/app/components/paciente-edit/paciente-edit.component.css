@@ -7,7 +7,7 @@
 .card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 
@@ -37,13 +37,15 @@
   width: 24px;
   height: 24px;
   border: 3px solid #eee;
-  border-top-color: #25D366;
+  border-top-color: #25d366;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .form-section {
@@ -85,7 +87,7 @@
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #25D366;
+  border-color: #25d366;
   box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
 }
 
@@ -102,7 +104,7 @@
   margin-bottom: 10px;
 }
 
-.numero-row input[type="text"] {
+.numero-row input[type='text'] {
   flex: 1;
   padding: 10px 14px;
   border: 1px solid #ddd;
@@ -110,9 +112,9 @@
   font-size: 15px;
 }
 
-.numero-row input[type="text"]:focus {
+.numero-row input[type='text']:focus {
   outline: none;
-  border-color: #25D366;
+  border-color: #25d366;
 }
 
 .checkbox-label {
@@ -144,7 +146,7 @@
 }
 
 .btn-primary {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
   width: 100%;
   padding: 12px;
@@ -172,8 +174,8 @@
 }
 
 .btn-outline:hover {
-  border-color: #25D366;
-  color: #25D366;
+  border-color: #25d366;
+  color: #25d366;
 }
 
 .btn-danger {

@@ -1,0 +1,20 @@
+networks:
+  app-network:
+    driver: bridge
+
+services:
+
+  # ─────────────────────────────────────────
+  # Frontend (Angular + Nginx)
+  # ─────────────────────────────────────────
+  frontend:
+    image: diogenesssantos/whatsapp-frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - app-network

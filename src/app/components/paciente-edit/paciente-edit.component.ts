@@ -9,7 +9,7 @@ import { PacienteRequest, PacienteResponse } from '../../models/paciente.model';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './paciente-edit.component.html',
-  styleUrls: ['./paciente-edit.component.css']
+  styleUrls: ['./paciente-edit.component.css'],
 })
 export class PacienteEditComponent implements OnInit {
   codigo = '';
@@ -17,14 +17,14 @@ export class PacienteEditComponent implements OnInit {
     nome: '',
     contato: {
       numerosCelular: [{ celular: '', isWhatsapp: true }],
-      bairro: ''
+      bairro: '',
     },
     consulta: {
       nome: '',
       dataAtendimento: '',
       dataMarcacao: '',
-      status: 'MARCADO'
-    }
+      status: 'MARCADO',
+    },
   };
 
   mensagem = '';
@@ -36,7 +36,7 @@ export class PacienteEditComponent implements OnInit {
     private pacienteService: PacienteService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -60,18 +60,18 @@ export class PacienteEditComponent implements OnInit {
     this.paciente = {
       nome: data.nome,
       contato: {
-        numerosCelular: data.contato.numerosCelular.map(n => ({
+        numerosCelular: data.contato.numerosCelular.map((n) => ({
           celular: n.celular,
-          isWhatsapp: n.isWhatsapp
+          isWhatsapp: n.isWhatsapp,
         })),
-        bairro: data.contato.bairro
+        bairro: data.contato.bairro,
       },
       consulta: {
         nome: data.consulta.nome,
         dataAtendimento: this.formatarParaInput(data.consulta.dataAtendimento),
         dataMarcacao: this.formatarParaInput(data.consulta.dataMarcacao),
-        status: data.consulta.status
-      }
+        status: data.consulta.status,
+      },
     };
   }
 
@@ -86,7 +86,7 @@ export class PacienteEditComponent implements OnInit {
         this.erro = 'Erro ao carregar dados do paciente.';
         this.carregandoDados = false;
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 
@@ -119,8 +119,8 @@ export class PacienteEditComponent implements OnInit {
       consulta: {
         ...this.paciente.consulta,
         dataAtendimento: this.formatarData(this.paciente.consulta.dataAtendimento),
-        dataMarcacao: this.formatarData(this.paciente.consulta.dataMarcacao)
-      }
+        dataMarcacao: this.formatarData(this.paciente.consulta.dataMarcacao),
+      },
     };
 
     this.pacienteService.editar(this.codigo, dadosEnvio).subscribe({
@@ -134,7 +134,7 @@ export class PacienteEditComponent implements OnInit {
         this.erro = err.error?.message || 'Erro ao atualizar paciente';
         this.carregando = false;
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 

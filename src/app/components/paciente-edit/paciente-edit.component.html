@@ -25,9 +25,14 @@
           <h3>Dados Pessoais</h3>
           <div class="form-group">
             <label for="nome">Nome Completo</label>
-            <input type="text" id="nome" name="nome"
-                   [(ngModel)]="paciente.nome" required
-                   placeholder="Ex: João Silva">
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              [(ngModel)]="paciente.nome"
+              required
+              placeholder="Ex: João Silva"
+            />
           </div>
         </div>
 
@@ -35,27 +40,36 @@
           <h3>Contato</h3>
           <div class="form-group">
             <label for="bairro">Bairro</label>
-            <input type="text" id="bairro" name="bairro"
-                   [(ngModel)]="paciente.contato.bairro" required
-                   placeholder="Ex: Centro">
+            <input
+              type="text"
+              id="bairro"
+              name="bairro"
+              [(ngModel)]="paciente.contato.bairro"
+              required
+              placeholder="Ex: Centro"
+            />
           </div>
 
           <label>Números de Celular</label>
           @for (numero of paciente.contato.numerosCelular; track numero; let i = $index) {
             <div class="numero-row">
-              <input type="text"
-                     [name]="'celular' + i"
-                     [(ngModel)]="numero.celular" required
-                     placeholder="Ex: 11987654321">
+              <input
+                type="text"
+                [name]="'celular' + i"
+                [(ngModel)]="numero.celular"
+                required
+                placeholder="Ex: 11987654321"
+              />
               <label class="checkbox-label">
-                <input type="checkbox"
-                       [name]="'whatsapp' + i"
-                       [(ngModel)]="numero.isWhatsapp">
+                <input type="checkbox" [name]="'whatsapp' + i" [(ngModel)]="numero.isWhatsapp" />
                 WhatsApp
               </label>
-              <button type="button" class="btn btn-danger btn-sm"
-                      (click)="removerNumero(i)"
-                      [disabled]="paciente.contato.numerosCelular.length <= 1">
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="removerNumero(i)"
+                [disabled]="paciente.contato.numerosCelular.length <= 1"
+              >
                 Remover
               </button>
             </div>
@@ -70,14 +84,18 @@
           <div class="form-row">
             <div class="form-group">
               <label for="consultaNome">Tipo da Consulta</label>
-              <input type="text" id="consultaNome" name="consultaNome"
-                     [(ngModel)]="paciente.consulta.nome" required
-                     placeholder="Ex: Consulta Clínica">
+              <input
+                type="text"
+                id="consultaNome"
+                name="consultaNome"
+                [(ngModel)]="paciente.consulta.nome"
+                required
+                placeholder="Ex: Consulta Clínica"
+              />
             </div>
             <div class="form-group">
               <label for="status">Status</label>
-              <select id="status" name="status"
-                      [(ngModel)]="paciente.consulta.status" required>
+              <select id="status" name="status" [(ngModel)]="paciente.consulta.status" required>
                 <option value="MARCADO">Marcado</option>
                 <option value="AGUARDANDO">Aguardando</option>
                 <option value="NAO_POSSUI_WHATSAPP">Não Possui WhatsApp</option>
@@ -88,20 +106,33 @@
           <div class="form-row">
             <div class="form-group">
               <label for="dataAtendimento">Data/Hora Atendimento</label>
-              <input type="datetime-local" id="dataAtendimento" name="dataAtendimento"
-                     [(ngModel)]="paciente.consulta.dataAtendimento" required>
+              <input
+                type="datetime-local"
+                id="dataAtendimento"
+                name="dataAtendimento"
+                [(ngModel)]="paciente.consulta.dataAtendimento"
+                required
+              />
             </div>
             <div class="form-group">
               <label for="dataMarcacao">Data/Hora Marcação</label>
-              <input type="datetime-local" id="dataMarcacao" name="dataMarcacao"
-                     [(ngModel)]="paciente.consulta.dataMarcacao" required>
+              <input
+                type="datetime-local"
+                id="dataMarcacao"
+                name="dataMarcacao"
+                [(ngModel)]="paciente.consulta.dataMarcacao"
+                required
+              />
             </div>
           </div>
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary"
-                  [disabled]="!formPaciente.valid || carregando">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!formPaciente.valid || carregando"
+          >
             {{ carregando ? 'Salvando...' : 'Salvar Alterações' }}
           </button>
         </div>

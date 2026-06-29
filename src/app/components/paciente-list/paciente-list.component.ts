@@ -16,7 +16,7 @@ interface Toast {
   standalone: true,
   imports: [FormsModule, ToastComponent],
   templateUrl: './paciente-list.component.html',
-  styleUrls: ['./paciente-list.component.css']
+  styleUrls: ['./paciente-list.component.css'],
 })
 export class PacienteListComponent implements OnInit {
   pacientes: PacienteResponse[] = [];
@@ -31,7 +31,7 @@ export class PacienteListComponent implements OnInit {
     consultaNome: '',
     status: '',
     dataMarcacaoInicio: '',
-    dataAtendimentoInicio: ''
+    dataAtendimentoInicio: '',
   };
 
   paginaAtual = 0;
@@ -47,21 +47,24 @@ export class PacienteListComponent implements OnInit {
   constructor(
     private pacienteService: PacienteService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.carregarPacientes();
   }
 
-  adicionarToast(mensagem: string, tipo: 'error' | 'success' | 'warning' | 'info' | 'server' = 'error'): void {
+  adicionarToast(
+    mensagem: string,
+    tipo: 'error' | 'success' | 'warning' | 'info' | 'server' = 'error',
+  ): void {
     const id = ++this.toastId;
     this.toasts.push({ id, mensagem, tipo });
     this.cdr.detectChanges();
   }
 
   fecharToast(id: number): void {
-    this.toasts = this.toasts.filter(t => t.id !== id);
+    this.toasts = this.toasts.filter((t) => t.id !== id);
     this.cdr.detectChanges();
   }
 
@@ -69,34 +72,39 @@ export class PacienteListComponent implements OnInit {
     this.carregando = true;
     this.cdr.detectChanges();
 
-    this.pacienteService.buscarComFiltros({
-      nome: this.filtros.nome || undefined,
-      bairro: this.filtros.bairro || undefined,
-      consultaNome: this.filtros.consultaNome || undefined,
-      status: this.filtros.status || undefined,
-      dataMarcacaoInicio: this.filtros.dataMarcacaoInicio || undefined,
-      dataAtendimentoInicio: this.filtros.dataAtendimentoInicio || undefined,
-      page: this.paginaAtual,
-      size: this.tamanhoPagina
-    }).subscribe({
-      next: (data) => {
-        this.pacientes = data.conteudo;
-        this.totalItens = data.totalItens;
-        this.totalPaginas = data.totalPaginas;
-        this.carregando = false;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.carregando = false;
-        this.adicionarToast('Erro ao carregar. Verifique se a API esta rodando.', 'server');
-      }
-    });
+    this.pacienteService
+      .buscarComFiltros({
+        nome: this.filtros.nome || undefined,
+        bairro: this.filtros.bairro || undefined,
+        consultaNome: this.filtros.consultaNome || undefined,
+        status: this.filtros.status || undefined,
+        dataMarcacaoInicio: this.filtros.dataMarcacaoInicio || undefined,
+        dataAtendimentoInicio: this.filtros.dataAtendimentoInicio || undefined,
+        page: this.paginaAtual,
+        size: this.tamanhoPagina,
+      })
+      .subscribe({
+        next: (data) => {
+          this.pacientes = data.conteudo;
+          this.totalItens = data.totalItens;
+          this.totalPaginas = data.totalPaginas;
+          this.carregando = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.carregando = false;
+          this.adicionarToast('Erro ao carregar. Verifique se a API esta rodando.', 'server');
+        },
+      });
   }
 
   aplicarFiltros(): void {
     if (this.filtros.dataMarcacaoInicio && this.filtros.dataAtendimentoInicio) {
       if (this.filtros.dataMarcacaoInicio > this.filtros.dataAtendimentoInicio) {
-        this.adicionarToast('Data de marcacao nao pode ser maior que data de atendimento.', 'warning');
+        this.adicionarToast(
+          'Data de marcacao nao pode ser maior que data de atendimento.',
+          'warning',
+        );
         return;
       }
     }
@@ -106,7 +114,14 @@ export class PacienteListComponent implements OnInit {
   }
 
   limparFiltros(): void {
-    this.filtros = { nome: '', bairro: '', consultaNome: '', status: '', dataMarcacaoInicio: '', dataAtendimentoInicio: '' };
+    this.filtros = {
+      nome: '',
+      bairro: '',
+      consultaNome: '',
+      status: '',
+      dataMarcacaoInicio: '',
+      dataAtendimentoInicio: '',
+    };
     this.paginaAtual = 0;
     this.carregarPacientes();
   }
@@ -156,7 +171,7 @@ export class PacienteListComponent implements OnInit {
       error: () => {
         this.fecharModalExclusao();
         this.adicionarToast('Erro ao excluir paciente.', 'server');
-      }
+      },
     });
   }
 
@@ -176,35 +191,37 @@ export class PacienteListComponent implements OnInit {
 
   atualizarStatus(): void {
     if (!this.pacienteSelecionado || !this.novoStatus) return;
-    this.pacienteService.atualizarStatus(this.pacienteSelecionado.codigo, this.novoStatus).subscribe({
-      next: () => {
-        this.pacienteSelecionado!.consulta.status = this.novoStatus as any;
-        this.fecharModalStatus();
-        this.adicionarToast('Status atualizado com sucesso!', 'success');
-      },
-      error: () => {
-        this.fecharModalStatus();
-        this.adicionarToast('Erro ao atualizar status.', 'server');
-      }
-    });
+    this.pacienteService
+      .atualizarStatus(this.pacienteSelecionado.codigo, this.novoStatus)
+      .subscribe({
+        next: () => {
+          this.pacienteSelecionado!.consulta.status = this.novoStatus as any;
+          this.fecharModalStatus();
+          this.adicionarToast('Status atualizado com sucesso!', 'success');
+        },
+        error: () => {
+          this.fecharModalStatus();
+          this.adicionarToast('Erro ao atualizar status.', 'server');
+        },
+      });
   }
 
   getStatusClass(status: string): string {
     const classes: Record<string, string> = {
-      'MARCADO': 'status-marcado',
-      'AGUARDANDO': 'status-aguardando',
-      'NAO_POSSUI_WHATSAPP': 'status-sem-whatsapp',
-      'REJEITADO': 'status-rejeitado'
+      MARCADO: 'status-marcado',
+      AGUARDANDO: 'status-aguardando',
+      NAO_POSSUI_WHATSAPP: 'status-sem-whatsapp',
+      REJEITADO: 'status-rejeitado',
     };
     return classes[status] || '';
   }
 
   formatStatus(status: string): string {
     const labels: Record<string, string> = {
-      'MARCADO': 'Marcado',
-      'AGUARDANDO': 'Aguardando',
-      'NAO_POSSUI_WHATSAPP': 'Não Possui WhatsApp',
-      'REJEITADO': 'Rejeitado'
+      MARCADO: 'Marcado',
+      AGUARDANDO: 'Aguardando',
+      NAO_POSSUI_WHATSAPP: 'Não Possui WhatsApp',
+      REJEITADO: 'Rejeitado',
     };
     return labels[status] || status;
   }

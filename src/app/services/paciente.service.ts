@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PacienteRequest, PacienteResponse, PacienteCreatedResponse, PaginaResponse } from '../models/paciente.model';
+import {
+  PacienteRequest,
+  PacienteResponse,
+  PacienteCreatedResponse,
+  PaginaResponse,
+} from '../models/paciente.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PacienteService {
   private apiUrl = '/api/pacientes';
@@ -34,8 +39,10 @@ export class PacienteService {
     if (filtros.bairro) params = params.set('bairro', filtros.bairro);
     if (filtros.consultaNome) params = params.set('consultaNome', filtros.consultaNome);
     if (filtros.status) params = params.set('status', filtros.status);
-    if (filtros.dataMarcacaoInicio) params = params.set('dataMarcacaoInicio', filtros.dataMarcacaoInicio);
-    if (filtros.dataAtendimentoInicio) params = params.set('dataAtendimentoInicio', filtros.dataAtendimentoInicio);
+    if (filtros.dataMarcacaoInicio)
+      params = params.set('dataMarcacaoInicio', filtros.dataMarcacaoInicio);
+    if (filtros.dataAtendimentoInicio)
+      params = params.set('dataAtendimentoInicio', filtros.dataAtendimentoInicio);
     params = params.set('page', (filtros.page ?? 0).toString());
     params = params.set('size', (filtros.size ?? 10).toString());
     return this.http.get<PaginaResponse<PacienteResponse>>(`${this.apiUrl}/buscar`, { params });

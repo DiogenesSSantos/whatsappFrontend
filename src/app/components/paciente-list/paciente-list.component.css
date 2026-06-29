@@ -7,7 +7,7 @@
 .card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .btn-primary {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
 }
 
@@ -50,8 +50,8 @@
 }
 
 .btn-outline:hover {
-  border-color: #25D366;
-  color: #25D366;
+  border-color: #25d366;
+  color: #25d366;
 }
 
 .loading {
@@ -67,13 +67,15 @@
   width: 24px;
   height: 24px;
   border: 3px solid #eee;
-  border-top-color: #25D366;
+  border-top-color: #25d366;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-state {
@@ -133,7 +135,7 @@ tr:hover {
 }
 
 .whatsapp-badge {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
   padding: 2px 6px;
   border-radius: 4px;
@@ -334,7 +336,7 @@ tr:hover {
 
 .status-select:focus {
   outline: none;
-  border-color: #25D366;
+  border-color: #25d366;
 }
 
 .filtros {
@@ -378,7 +380,7 @@ tr:hover {
 .filtro-group input:focus,
 .filtro-group select:focus {
   outline: none;
-  border-color: #25D366;
+  border-color: #25d366;
 }
 
 .filtro-actions {
@@ -399,8 +401,8 @@ tr:hover {
 }
 
 .btn-outline:hover {
-  border-color: #25D366;
-  color: #25D366;
+  border-color: #25d366;
+  color: #25d366;
 }
 
 .paginacao {
@@ -437,14 +439,14 @@ tr:hover {
 }
 
 .btn-page:hover:not(:disabled):not(.active) {
-  border-color: #25D366;
-  color: #25D366;
+  border-color: #25d366;
+  color: #25d366;
 }
 
 .btn-page.active {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
-  border-color: #25D366;
+  border-color: #25d366;
 }
 
 .btn-page:disabled {

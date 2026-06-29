@@ -9,21 +9,21 @@ import { PacienteRequest } from '../../models/paciente.model';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './paciente-form.component.html',
-  styleUrls: ['./paciente-form.component.css']
+  styleUrls: ['./paciente-form.component.css'],
 })
 export class PacienteFormComponent {
   paciente: PacienteRequest = {
     nome: '',
     contato: {
       numerosCelular: [{ celular: '', isWhatsapp: true }],
-      bairro: ''
+      bairro: '',
     },
     consulta: {
       nome: '',
       dataAtendimento: '',
       dataMarcacao: '',
-      status: 'MARCADO'
-    }
+      status: 'MARCADO',
+    },
   };
 
   mensagem = '';
@@ -32,7 +32,7 @@ export class PacienteFormComponent {
 
   constructor(
     private pacienteService: PacienteService,
-    private router: Router
+    private router: Router,
   ) {}
 
   adicionarNumero(): void {
@@ -59,8 +59,8 @@ export class PacienteFormComponent {
       consulta: {
         ...this.paciente.consulta,
         dataAtendimento: this.formatarData(this.paciente.consulta.dataAtendimento),
-        dataMarcacao: this.formatarData(this.paciente.consulta.dataMarcacao)
-      }
+        dataMarcacao: this.formatarData(this.paciente.consulta.dataMarcacao),
+      },
     };
 
     this.pacienteService.criar(dadosEnvio).subscribe({
@@ -72,7 +72,7 @@ export class PacienteFormComponent {
       error: (err) => {
         this.erro = err.error?.message || 'Erro ao cadastrar paciente';
         this.carregando = false;
-      }
+      },
     });
   }
 
