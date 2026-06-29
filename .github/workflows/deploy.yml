@@ -70,11 +70,12 @@ jobs:
 
       - name: Discord notification
         if: always()
+        env:
+          STATUS: ${{ job.status }}
         run: |
-          STATUS="${{ job.status }}"
-          COLOR=$(( STATUS == 'success' && echo 3066993 || echo 15158332 ))
+          if [ "$STATUS" = "success" ]; then COLOR=3066993; else COLOR=15158332; fi
           curl -s -H "Content-Type: application/json" \
-            -d "{\"embeds\":[{\"title\":\"Frontend Deploy (Dev)\",\"description\":\"Status: **${STATUS}**\nRun: ${{ github.run_number }}\nCommit: ${{ github.sha }}\",\"color\":${COLOR}}]}" \
+            -d "{\"embeds\":[{\"title\":\"Frontend Deploy (Dev)\",\"description\":\"Status: **'${STATUS}'**\nRun: ${{ github.run_number }}\nCommit: ${{ github.sha }}\",\"color\":${COLOR}}]}" \
             ${{ secrets.DISCORD_WEBHOOK_URL }}
 
   deploy-prod:
@@ -105,9 +106,10 @@ jobs:
 
       - name: Discord notification
         if: always()
+        env:
+          STATUS: ${{ job.status }}
         run: |
-          STATUS="${{ job.status }}"
-          COLOR=$(( STATUS == 'success' && echo 3066993 || echo 15158332 ))
+          if [ "$STATUS" = "success" ]; then COLOR=3066993; else COLOR=15158332; fi
           curl -s -H "Content-Type: application/json" \
-            -d "{\"embeds\":[{\"title\":\"Frontend Deploy (Prod)\",\"description\":\"Status: **${STATUS}**\nTag: v${{ github.run_number }}\nCommit: ${{ github.sha }}\",\"color\":${COLOR}}]}" \
+            -d "{\"embeds\":[{\"title\":\"Frontend Deploy (Prod)\",\"description\":\"Status: **'${STATUS}'**\nTag: v${{ github.run_number }}\nCommit: ${{ github.sha }}\",\"color\":${COLOR}}]}" \
             ${{ secrets.DISCORD_WEBHOOK_URL }}
