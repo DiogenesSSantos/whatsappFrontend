@@ -65,8 +65,9 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /root/whatsapp-api
+            docker stop frontend 2>/dev/null; docker rm frontend 2>/dev/null
             docker compose pull frontend
-            docker compose up -d --no-deps --force-recreate frontend
+            docker compose up -d --no-deps frontend
 
   deploy-prod:
     needs: deploy-dev
@@ -90,5 +91,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /root/whatsapp-api
+            docker stop frontend 2>/dev/null; docker rm frontend 2>/dev/null
             docker compose pull frontend
-            docker compose up -d --no-deps --force-recreate frontend
+            docker compose up -d --no-deps frontend
