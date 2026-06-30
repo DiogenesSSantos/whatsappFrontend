@@ -13,7 +13,7 @@ export type StatusConsulta = 'MARCADO' | 'AGUARDANDO' | 'NAO_POSSUI_WHATSAPP' | 
 export interface Consulta {
   nome: string;
   dataAtendimento: string;
-  dataMarcacao: string;
+  dataMarcacao?: string;
   status: StatusConsulta;
 }
 
