@@ -226,7 +226,7 @@ export class PacienteListComponent implements OnInit {
     return labels[status] || status;
   }
 
-  formatarData(data: string): string {
+  formatarData(data: string | undefined): string {
     if (!data) return '-';
     return new Date(data).toLocaleString('pt-BR');
   }
