@@ -64,10 +64,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            docker pull ${{ env.IMAGE_NAME }}:latest
-            docker stop frontend || true
-            docker rm frontend || true
-            docker run -d --name frontend --network whatsapp-api_app-network -p 80:80 --restart unless-stopped ${{ env.IMAGE_NAME }}:latest
+            cd /root
+            docker compose -f docker-compose.frontend.yml pull
+            docker compose -f docker-compose.frontend.yml up -d
 
   deploy-prod:
     needs: deploy-dev
@@ -90,7 +89,6 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            docker pull ${{ env.IMAGE_NAME }}:v${{ github.run_number }}
-            docker stop frontend || true
-            docker rm frontend || true
-            docker run -d --name frontend --network whatsapp-api_app-network -p 80:80 --restart unless-stopped ${{ env.IMAGE_NAME }}:v${{ github.run_number }}
+            cd /root
+            docker compose -f docker-compose.frontend.yml pull
+            docker compose -f docker-compose.frontend.yml up -d
