@@ -21,7 +21,6 @@ export class PacienteFormComponent {
     consulta: {
       nome: '',
       dataAtendimento: '',
-      dataMarcacao: '',
       status: 'MARCADO',
     },
   };
@@ -59,7 +58,6 @@ export class PacienteFormComponent {
       consulta: {
         ...this.paciente.consulta,
         dataAtendimento: this.formatarData(this.paciente.consulta.dataAtendimento),
-        dataMarcacao: this.formatarData(this.paciente.consulta.dataMarcacao),
       },
     };
 
