@@ -90,7 +90,7 @@ export class PacienteEditComponent implements OnInit {
     });
   }
 
-  formatarParaInput(data: string): string {
+  formatarParaInput(data: string | undefined): string {
     if (!data) return '';
     return data.substring(0, 16);
   }
@@ -105,7 +105,7 @@ export class PacienteEditComponent implements OnInit {
     }
   }
 
-  formatarData(data: string): string {
+  formatarData(data: string | undefined): string {
     return data ? data + ':00' : '';
   }
 
